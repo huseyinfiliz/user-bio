@@ -17,7 +17,7 @@ use ZipArchive;
 
 class UserBioData implements DataType
 {
-    public function dataType(): string
+    public static function dataType(): string
     {
         return 'user-bio';
     }
@@ -53,17 +53,17 @@ class UserBioData implements DataType
         $user->save();
     }
 
-    public function exportDescription(): string
+    public static function exportDescription(): string
     {
         return 'User biography text';
     }
 
-    public function anonymizeDescription(): string
+    public static function anonymizeDescription(): string
     {
         return 'Remove user biography';
     }
 
-    public function deleteDescription(): string
+    public static function deleteDescription(): string
     {
         return 'Remove user biography';
     }
