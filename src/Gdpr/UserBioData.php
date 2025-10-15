@@ -11,26 +11,21 @@
 
 namespace FoF\UserBio\Gdpr;
 
-use Flarum\Gdpr\Contracts\DataProcessor;
-use Flarum\Gdpr\Data;
+use Flarum\Gdpr\Contracts\DataType;
 use Flarum\User\User;
-use Illuminate\Support\Arr;
+use ZipArchive;
 
-class UserBioGdprProvider implements DataProcessor
+class UserBioData implements DataType
 {
-    public function export(User $user): ?Data
+    public function export(User $user, ZipArchive $zip): ?array
     {
         if (empty($user->bio)) {
             return null;
         }
 
-        return new Data(
-            'user-bio',
-            'User Bio',
-            [
-                'bio' => $user->bio,
-            ]
-        );
+        return [
+            'bio' => $user->bio,
+        ];
     }
 
     public function anonymize(User $user): void
@@ -45,7 +40,7 @@ class UserBioGdprProvider implements DataProcessor
         $user->save();
     }
 
-    public function exportDescription(): string
+    public static function exportDescription(): string
     {
         return 'User biography text';
     }
