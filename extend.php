@@ -16,6 +16,10 @@ use Flarum\Extend as Flarum;
 use Flarum\Settings\Event\Saved;
 use Flarum\User\Event\Saving;
 use Flarum\User\User;
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
+use Flarum\Api\Resource;
+use Flarum\Api\Schema;
 
 return [
     (new Flarum\Frontend('forum'))
@@ -34,6 +38,7 @@ return [
         ->listen(Saving::class, Listeners\SaveUserBio::class)
         ->listen(Saved::class, Listeners\ClearFormatterCache::class),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Flarum\ApiSerializer(UserSerializer::class))
         ->attributes(Listeners\AddUserBioAttribute::class),
 
