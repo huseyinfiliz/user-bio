@@ -68,7 +68,8 @@
         "flarum/bbcode": "2.x-dev",
         "flarum/testing": "2.x-dev",
         "flarum/phpstan": "2.x-dev",
-        "flarum/suspend": "2.x-dev"
+        "flarum/suspend": "2.x-dev",
+		"flarum/gdpr": "2.x-dev"
     },
     "autoload-dev": {
         "psr-4": {
