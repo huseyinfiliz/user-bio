@@ -21,16 +21,17 @@ use Illuminate\Support\Str;
 
 class SaveUserBio
 {
-    public function __construct(protected SettingsRepositoryInterface $settings, protected UserBioFormatter $formatter, protected UserBioValidator $validator)
-    {
+    public function __construct(
+        protected SettingsRepositoryInterface $settings,
+        protected UserBioFormatter $formatter,
+        protected UserBioValidator $validator
+    ) {
     }
 
     /**
-     * @param Saving $event
-     *
      * @throws \Flarum\User\Exception\PermissionDeniedException
      */
-    public function handle(Saving $event)
+    public function handle(Saving $event): void
     {
         $user = $event->user;
         $data = $event->data;

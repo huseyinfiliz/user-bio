@@ -11,6 +11,7 @@
 
 namespace FoF\UserBio\Listeners;
 
+use Flarum\Api\Event\Serializing;
 use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
@@ -18,20 +19,24 @@ use FoF\UserBio\Formatter\UserBioFormatter;
 
 class AddUserBioAttribute
 {
-    public function __construct(protected SettingsRepositoryInterface $settings, protected UserBioFormatter $formatter)
-    {
+    public function __construct(
+        protected SettingsRepositoryInterface $settings,
+        protected UserBioFormatter $formatter
+    ) {
     }
 
-    /**
-     * @param UserSerializer $serializer
-     * @param User           $user
-     * @param array          $attributes
-     *
-     * @return array
-     */
-    public function __invoke(UserSerializer $serializer, User $user, array $attributes): array
+    public function handle(Serializing $event): void
     {
-        $actor = $serializer->getActor();
+
+        // Only handle UserSerializer events
+        if (!($event->serializer instanceof UserSerializer)) {
+            return;
+        }
+
+        /** @var User $user */
+        $user = $event->model;
+        $attributes = &$event->attributes;
+        $actor = $event->serializer->getActor();
 
         $bio = $user->bio ?? '';
         $isXML = str_starts_with($bio, '<') && str_ends_with($bio, '>');
@@ -51,12 +56,8 @@ class AddUserBioAttribute
                 $attributes['bio'] = $bio;
             }
 
-            $attributes += [
-                'canViewBio' => true,
-                'canEditBio' => $canEdit,
-            ];
+            $attributes['canViewBio'] = true;
+            $attributes['canEditBio'] = $canEdit;
         }
-
-        return $attributes;
     }
 }

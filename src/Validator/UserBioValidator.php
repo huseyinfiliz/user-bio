@@ -18,20 +18,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserBioValidator extends AbstractValidator
 {
-    public function __construct(Factory $validator, TranslatorInterface $translator, protected SettingsRepositoryInterface $settings)
-    {
+    public function __construct(
+        Factory $validator,
+        TranslatorInterface $translator,
+        protected SettingsRepositoryInterface $settings
+    ) {
         parent::__construct($validator, $translator);
     }
 
-    /**
-     * @return array
-     */
     protected function getRules(): array
     {
         return [
             'bio' => [
                 'string',
-                'max:'.$this->settings->get('fof-user-bio.maxLength'),
+                'max:' . $this->settings->get('fof-user-bio.maxLength', 200),
             ],
         ];
     }
