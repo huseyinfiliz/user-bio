@@ -31,7 +31,11 @@ class AddUserBioFields
             // Bio field - writable, visible based on permission
             Schema\Str::make('bio')
                 ->get(fn (User $user, Context $context) => $this->getBio($user, $context))
-                ->writable()
+                ->set(function (User $user, string $value, Context $context) {
+                    // Yetki kontrolü SaveUserBio listener'ında yapılıyor
+                    // Burada sadece değeri set ediyoruz
+                    return $value;
+                })
                 ->visible(fn (User $user, Context $context) => $context->getActor()->can('viewBio', $user)),
 
             // BioHtml field - read only, rendered HTML version

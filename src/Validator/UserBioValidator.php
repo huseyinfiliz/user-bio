@@ -12,9 +12,9 @@
 namespace FoF\UserBio\Validator;
 
 use Flarum\Foundation\AbstractValidator;
+use Flarum\Locale\TranslatorInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Validation\Factory;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserBioValidator extends AbstractValidator
 {
