@@ -17,9 +17,14 @@ use ZipArchive;
 
 class UserBioData implements DataType
 {
-    public function export(User $user, ZipArchive $zip): ?array
+    public function dataType(): string
     {
-        if (empty($user->bio)) {
+        return 'user-bio';
+    }
+
+    public function export(?User $user = null, ?ZipArchive $zip = null): ?array
+    {
+        if (!$user || empty($user->bio)) {
             return null;
         }
 
@@ -28,20 +33,38 @@ class UserBioData implements DataType
         ];
     }
 
-    public function anonymize(User $user): void
+    public function anonymize(?User $user = null): void
     {
+        if (!$user) {
+            return;
+        }
+
         $user->bio = null;
         $user->save();
     }
 
-    public function delete(User $user): void
+    public function delete(?User $user = null): void
     {
+        if (!$user) {
+            return;
+        }
+
         $user->bio = null;
         $user->save();
     }
 
-    public static function exportDescription(): string
+    public function exportDescription(): string
     {
         return 'User biography text';
+    }
+
+    public function anonymizeDescription(): string
+    {
+        return 'Remove user biography';
+    }
+
+    public function deleteDescription(): string
+    {
+        return 'Remove user biography';
     }
 }
