@@ -49,4 +49,11 @@ return [
 
     (new Flarum\ServiceProvider())
         ->register(Formatter\FormatterServiceProvider::class),
+
+    // GDPR Integration - Flarum 2.x
+    (new Flarum\Conditional())
+        ->whenExtensionEnabled('flarum-gdpr', fn () => [
+            (new Flarum\ServiceProvider())
+                ->register(Gdpr\UserBioGdprServiceProvider::class),
+        ]),
 ];
