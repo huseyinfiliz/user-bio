@@ -16,12 +16,15 @@ use Flarum\Api\Schema;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\UserBio\Formatter\UserBioFormatter;
+use FoF\UserBio\Validator\UserBioValidator;
+use Illuminate\Support\Str;
 
 class AddUserBioFields
 {
     public function __construct(
         protected SettingsRepositoryInterface $settings,
-        protected UserBioFormatter $formatter
+        protected UserBioFormatter $formatter,
+        protected UserBioValidator $validator
     ) {
     }
 
@@ -31,10 +34,22 @@ class AddUserBioFields
             // Bio field - writable, visible based on permission
             Schema\Str::make('bio')
                 ->get(fn (User $user, Context $context) => $this->getBio($user, $context))
+                ->writable(fn (User $user, Context $context) => $context->getActor()->can('editBio', $user))
                 ->set(function (User $user, string $value, Context $context) {
-                    // Yetki kontrolü SaveUserBio listener'ında yapılıyor
-                    // Burada sadece değeri set ediyoruz
-                    return $value;
+                    // Validasyon
+                    $this->validator->assertValid(['bio' => $value]);
+
+                    // Temizleme ve formatlama
+                    $bio = Str::of($value)->trim();
+                    $bio = preg_replace('/\R{3,}/u', "\n\n", $bio);
+                    
+                    $allowFormatting = $this->settings->get('fof-user-bio.allowFormatting', false);
+                    
+                    if ($allowFormatting) {
+                        $user->bio = $this->formatter->parse($bio);
+                    } else {
+                        $user->bio = $bio;
+                    }
                 })
                 ->visible(fn (User $user, Context $context) => $context->getActor()->can('viewBio', $user)),
 
