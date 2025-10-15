@@ -16,6 +16,7 @@ use Flarum\Gdpr\Models\ErasureRequest;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class GdprIntegrationTest extends TestCase
 {
@@ -29,7 +30,7 @@ class GdprIntegrationTest extends TestCase
         $this->extension('fof-user-bio');
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
                 [
                     'id'                 => 3,
@@ -47,9 +48,7 @@ class GdprIntegrationTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_bio_is_anonimized()
     {
         $response = $this->send(
