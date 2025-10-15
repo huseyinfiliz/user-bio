@@ -11,9 +11,7 @@
 
 namespace FoF\UserBio;
 
-use Flarum\Api\Context;
 use Flarum\Api\Resource;
-use Flarum\Api\Schema;
 use Flarum\Extend as Flarum;
 use Flarum\Settings\Event\Saved;
 use Flarum\User\Event\Saving;
@@ -38,68 +36,7 @@ return [
 
     // Flarum 2.x JSON:API - declare ALL bio-related fields via ApiResource
     (new Flarum\ApiResource(Resource\UserResource::class))
-        ->fields(function () {
-            /** @var \Flarum\Settings\SettingsRepositoryInterface $settings */
-            $settings = resolve(\Flarum\Settings\SettingsRepositoryInterface::class);
-            /** @var \FoF\UserBio\Formatter\UserBioFormatter $formatter */
-            $formatter = resolve(\FoF\UserBio\Formatter\UserBioFormatter::class);
-            
-            return [
-                // Bio field - writable, visible based on permission
-                Schema\Str::make('bio')
-                    ->get(function (User $user, Context $context) use ($settings, $formatter) {
-                        $actor = $context->getActor();
-                        if (!$actor->can('viewBio', $user)) {
-                            return null;
-                        }
-                        
-                        $bio = $user->bio ?? '';
-                        $isXML = str_starts_with($bio, '<') && str_ends_with($bio, '>');
-                        $allowFormatting = $settings->get('fof-user-bio.allowFormatting', false);
-                        $canEdit = $actor->can('editBio', $user);
-                        
-                        if ($isXML) {
-                            // Show unparsed bio if formatting disabled or user can edit
-                            if (!$allowFormatting || $canEdit) {
-                                return $formatter->unparse($bio);
-                            }
-                            return null;
-                        }
-                        
-                        return $bio;
-                    })
-                    ->writable()
-                    ->visible(fn (User $user, Context $context) => $context->getActor()->can('viewBio', $user)),
-                    
-                // BioHtml field - read only, rendered HTML version
-                Schema\Str::make('bioHtml')
-                    ->get(function (User $user, Context $context) use ($settings, $formatter) {
-                        $actor = $context->getActor();
-                        if (!$actor->can('viewBio', $user)) {
-                            return null;
-                        }
-                        
-                        $bio = $user->bio ?? '';
-                        $isXML = str_starts_with($bio, '<') && str_ends_with($bio, '>');
-                        $allowFormatting = $settings->get('fof-user-bio.allowFormatting', false);
-                        
-                        if ($isXML && $allowFormatting) {
-                            return $formatter->render($bio);
-                        }
-                        
-                        return null;
-                    })
-                    ->visible(fn (User $user, Context $context) => $context->getActor()->can('viewBio', $user)),
-                    
-                // CanViewBio - permission flag
-                Schema\Boolean::make('canViewBio')
-                    ->get(fn (User $user, Context $context) => $context->getActor()->can('viewBio', $user)),
-                    
-                // CanEditBio - permission flag
-                Schema\Boolean::make('canEditBio')
-                    ->get(fn (User $user, Context $context) => $context->getActor()->can('editBio', $user)),
-            ];
-        }),
+        ->fields(Api\AddUserBioFields::class),
 
     (new Flarum\Policy())
         ->modelPolicy(User::class, Access\UserPolicy::class),
