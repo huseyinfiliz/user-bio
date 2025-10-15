@@ -35,15 +35,18 @@ return [
         ->listen(Saving::class, Listeners\SaveUserBio::class)
         ->listen(Saved::class, Listeners\ClearFormatterCache::class),
 
-    // Flarum 2.x JSON:API (beta) – declare fields via Schema on the User resource
+    // Flarum 2.x JSON:API - declare fields via Schema on the User resource
     (new Flarum\ApiResource(Resource\UserResource::class))
         ->fields(fn () => [
             Schema\Str::make('bio')
-                ->get(fn (User $user) => $user->bio),
-            // If you later want to allow writes through the API:
-            // ->writable()
-            // ->set(function (User $user, string $value) { $user->bio = $value; }),
+                ->get(fn (User $user) => $user->bio)
+                ->writable(),  // Enable writing through API
         ]),
+
+    // Add bio attributes (bioHtml, canViewBio, canEditBio) via Serializing event
+    // This ensures actor context is available for permission checks
+    (new Flarum\Event())
+        ->listen(\Flarum\Api\Event\Serializing::class, Listeners\AddUserBioAttribute::class),
 
     (new Flarum\Policy())
         ->modelPolicy(User::class, Access\UserPolicy::class),
@@ -51,7 +54,8 @@ return [
     (new Flarum\Settings())
         ->serializeToForum('fof-user-bio.maxLength', 'fof-user-bio.maxLength', 'intVal')
         ->serializeToForum('fof-user-bio.maxLines', 'fof-user-bio.maxLines', 'intVal')
-        ->default('fof-user-bio.maxLength', 200),
+        ->default('fof-user-bio.maxLength', 200)
+        ->default('fof-user-bio.maxLines', 5),
 
     (new Flarum\ServiceProvider())
         ->register(Formatter\FormatterServiceProvider::class),
