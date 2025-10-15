@@ -18,22 +18,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserBioValidator extends AbstractValidator
 {
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
-
-    public function __construct(Factory $validator, TranslatorInterface $translator, SettingsRepositoryInterface $settings)
+    public function __construct(Factory $validator, TranslatorInterface $translator, protected SettingsRepositoryInterface $settings)
     {
         parent::__construct($validator, $translator);
-
-        $this->settings = $settings;
     }
 
     /**
      * @return array
      */
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'bio' => [

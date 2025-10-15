@@ -17,16 +17,9 @@ use Illuminate\Cache\Repository;
 
 class UserBioFormatter extends Formatter
 {
-    /**
-     * @var ExtensionManager
-     */
-    protected $extensions;
-
-    public function __construct(Repository $repository, string $cacheDir, ExtensionManager $extensions)
+    public function __construct(Repository $repository, string $cacheDir, protected ExtensionManager $extensions)
     {
         parent::__construct($repository, $cacheDir);
-
-        $this->extensions = $extensions;
     }
 
     /**

@@ -21,26 +21,8 @@ use Illuminate\Support\Str;
 
 class SaveUserBio
 {
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
-
-    /**
-     * @var UserBioFormatter
-     */
-    protected $formatter;
-
-    /**
-     * @var UserBioValidator
-     */
-    protected $validator;
-
-    public function __construct(SettingsRepositoryInterface $settings, UserBioFormatter $formatter, UserBioValidator $validator)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected UserBioFormatter $formatter, protected UserBioValidator $validator)
     {
-        $this->settings = $settings;
-        $this->formatter = $formatter;
-        $this->validator = $validator;
     }
 
     /**

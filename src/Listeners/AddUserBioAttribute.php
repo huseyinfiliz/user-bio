@@ -18,20 +18,8 @@ use FoF\UserBio\Formatter\UserBioFormatter;
 
 class AddUserBioAttribute
 {
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
-
-    /**
-     * @var UserBioFormatter
-     */
-    protected $formatter;
-
-    public function __construct(SettingsRepositoryInterface $settings, UserBioFormatter $formatter)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected UserBioFormatter $formatter)
     {
-        $this->settings = $settings;
-        $this->formatter = $formatter;
     }
 
     /**
