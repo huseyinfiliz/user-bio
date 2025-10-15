@@ -65,11 +65,11 @@
         }
     },
     "require-dev": {
-        "flarum/bbcode": "*",
+        "flarum/bbcode": "^2.0.0-beta.3",
         "flarum/testing": "^2.0.0-beta",
         "flarum/phpstan": "^2.0.0-beta",
-        "flarum/suspend": "*",
-        "flarum/gdpr": "dev-main"
+        "flarum/suspend": "^2.0.0-beta.3"
+
     },
     "autoload-dev": {
         "psr-4": {

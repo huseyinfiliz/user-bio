@@ -11,25 +11,22 @@
 
 namespace FoF\UserBio;
 
-use Flarum\Api\Serializer\UserSerializer;
+use Flarum\Api\Resource;
+use Flarum\Api\Schema;
 use Flarum\Extend as Flarum;
 use Flarum\Settings\Event\Saved;
 use Flarum\User\Event\Saving;
 use Flarum\User\User;
-use Flarum\Api\Context;
-use Flarum\Api\Endpoint;
-use Flarum\Api\Resource;
-use Flarum\Api\Schema;
 
 return [
     (new Flarum\Frontend('forum'))
-        ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/resources/less/forum.less'),
+        ->js(__DIR__ . '/js/dist/forum.js')
+        ->css(__DIR__ . '/resources/less/forum.less'),
 
     (new Flarum\Frontend('admin'))
-        ->js(__DIR__.'/js/dist/admin.js'),
+        ->js(__DIR__ . '/js/dist/admin.js'),
 
-    new Flarum\Locales(__DIR__.'/resources/locale'),
+    new Flarum\Locales(__DIR__ . '/resources/locale'),
 
     (new Flarum\Model(User::class))
         ->cast('bio', 'string'),
@@ -38,9 +35,15 @@ return [
         ->listen(Saving::class, Listeners\SaveUserBio::class)
         ->listen(Saved::class, Listeners\ClearFormatterCache::class),
 
-    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
-    (new Flarum\ApiSerializer(UserSerializer::class))
-        ->attributes(Listeners\AddUserBioAttribute::class),
+    // Flarum 2.x JSON:API (beta) – declare fields via Schema on the User resource
+    (new Flarum\ApiResource(Resource\UserResource::class))
+        ->fields(fn () => [
+            Schema\Str::make('bio')
+                ->get(fn (User $user) => $user->bio),
+            // If you later want to allow writes through the API:
+            // ->writable()
+            // ->set(function (User $user, string $value) { $user->bio = $value; }),
+        ]),
 
     (new Flarum\Policy())
         ->modelPolicy(User::class, Access\UserPolicy::class),
