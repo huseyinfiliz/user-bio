@@ -13,44 +13,40 @@ namespace FoF\UserBio\Gdpr;
 
 use Flarum\Gdpr\Contracts\DataType;
 use Flarum\User\User;
-use ZipArchive;
 
 class UserBioData implements DataType
 {
+    public function __construct(
+        protected User $user
+    ) {
+    }
+
     public static function dataType(): string
     {
         return 'user-bio';
     }
 
-    public function export(?User $user = null, ?ZipArchive $zip = null): ?array
+    public function export(): ?array
     {
-        if (!$user || empty($user->bio)) {
+        if (empty($this->user->bio)) {
             return null;
         }
 
         return [
-            'bio' => $user->bio,
+            'bio' => $this->user->bio,
         ];
     }
 
-    public function anonymize(?User $user = null): void
+    public function anonymize(): void
     {
-        if (!$user) {
-            return;
-        }
-
-        $user->bio = null;
-        $user->save();
+        $this->user->bio = null;
+        $this->user->save();
     }
 
-    public function delete(?User $user = null): void
+    public function delete(): void
     {
-        if (!$user) {
-            return;
-        }
-
-        $user->bio = null;
-        $user->save();
+        $this->user->bio = null;
+        $this->user->save();
     }
 
     public static function exportDescription(): string
