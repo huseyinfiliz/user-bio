@@ -12,12 +12,22 @@
 namespace FoF\UserBio\Gdpr;
 
 use Flarum\Gdpr\Contracts\DataType;
+use Flarum\Gdpr\Models\ErasureRequest;
+use Flarum\Http\UrlGenerator;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Filesystem\Factory;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserBioData implements DataType
 {
     public function __construct(
-        protected User $user
+        protected User $user,
+        protected ?ErasureRequest $erasureRequest,
+        protected Factory $filesystemFactory,
+        protected SettingsRepositoryInterface $settings,
+        protected UrlGenerator $url,
+        protected TranslatorInterface $translator
     ) {
     }
 
