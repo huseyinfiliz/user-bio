@@ -43,7 +43,9 @@ class UserBioData implements DataType
         }
 
         return [
-            'bio' => $this->user->bio,
+            'user-bio/bio.json' => json_encode([
+                'bio' => $this->user->bio,
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         ];
     }
 
