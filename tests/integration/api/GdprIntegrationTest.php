@@ -55,7 +55,7 @@ class GdprIntegrationTest extends TestCase
                 'json'            => [
                     'data' => [
                         'attributes' => [
-                            'processor_comment' => 'I have processed this request',
+                            'processorComment' => 'I have processed this request',
                             'meta'              => [
                                 'mode' => ErasureRequest::MODE_ANONYMIZATION,
                             ],
