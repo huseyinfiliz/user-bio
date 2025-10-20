@@ -36,10 +36,10 @@ class AddUserBioFields
                 ->get(fn (User $user, Context $context) => $this->getBio($user, $context))
                 ->writable(fn (User $user, Context $context) => $context->getActor()->can('editBio', $user))
                 ->set(function (User $user, string $value, Context $context) {
-                    // Validasyon
+                    // Validate the bio input
                     $this->validator->assertValid(['bio' => $value]);
 
-                    // Temizleme ve formatlama
+                    // Clean and format the bio text
                     $bio = Str::of($value)->trim();
                     $bio = preg_replace('/\R{3,}/u', "\n\n", $bio);
                     

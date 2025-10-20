@@ -23,7 +23,7 @@ class SaveUserBio
     {
         $user = $event->user;
 
-        // Bio değişikliği varsa event raise et
+        // Raise the BioChanged event if bio was modified
         if ($user->isDirty('bio')) {
             $user->raise(new BioChanged($user, $event->actor));
         }
