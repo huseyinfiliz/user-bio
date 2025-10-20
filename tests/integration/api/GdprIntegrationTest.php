@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of fof/user-bio.
  *
@@ -8,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace FoF\UserBio\Tests\integration\api;
 
 use Carbon\Carbon;
@@ -66,6 +64,8 @@ class GdprIntegrationTest extends TestCase
                 ],
             ])
         );
+
+        echo "\n=== DEBUG ===\nStatus: " . $response->getStatusCode() . "\nBody: " . $response->getBody() . "\n=============\n";
 
         $this->assertEquals(200, $response->getStatusCode());
 
