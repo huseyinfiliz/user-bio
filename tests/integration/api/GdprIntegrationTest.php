@@ -54,11 +54,11 @@ class GdprIntegrationTest extends TestCase
                 'authenticatedAs' => 1,
                 'json'            => [
                     'data' => [
+                        'type' => 'user-erasure-requests',
+                        'id' => '1',
                         'attributes' => [
                             'processorComment' => 'I have processed this request',
-                            'meta'              => [
-                                'mode' => ErasureRequest::MODE_ANONYMIZATION,
-                            ],
+                            'processedMode' => ErasureRequest::MODE_ANONYMIZATION,
                         ],
                     ],
                 ],
